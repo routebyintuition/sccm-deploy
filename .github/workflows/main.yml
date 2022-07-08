@@ -2,7 +2,7 @@ name: MainDeployment
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
