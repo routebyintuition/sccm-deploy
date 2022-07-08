@@ -13,4 +13,5 @@ jobs:
           args: zip -qq -r cm-int-roles.zip cm-roles
       - uses: actions/upload-artifact@v2
         with:
-          name: cm-int-roles.zip
+          name: role-zip
+          path: cm-int-roles.zip
