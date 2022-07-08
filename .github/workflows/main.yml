@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: montudor/action-zip@v1
         with:
-          args: zip -qq -r cm-int-roles.zip cm-roles
+          args: zip -qq -r roles.zip cm-roles
       - uses: actions/upload-artifact@v2
         with:
-          name: cm-int-roles.zip
+          name: roles.zip
