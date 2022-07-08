@@ -19,7 +19,9 @@
         [Parameter(Mandatory)]
         [String]$DNSIPAddress,
         [Parameter(Mandatory)]
-        [System.Management.Automation.PSCredential]$Admincreds
+        [System.Management.Automation.PSCredential]$Admincreds,
+        [Parameter(Mandatory)]
+        [System.Management.Automation.PSCredential]$SCCMCreds        
     )
     Import-DscResource -ModuleName TemplateHelpDSC
     
@@ -109,7 +111,7 @@
                 TaskName = "ScriptWorkFlow"
                 ScriptName = "ScriptWorkFlow.ps1"
                 ScriptPath = $PSScriptRoot
-                ScriptArgument = "$DomainName $CM $DName\$($Admincreds.UserName) $DPMPName $Clients $Configuration $CurrentRole $LogFolder $CSName $PSName"
+                ScriptArgument = "$DomainName $CM $DName\$($Admincreds.UserName) $DPMPName $Clients $Configuration $CurrentRole $LogFolder $CSName $PSName $($SCCMCreds.UserName)"
                 Ensure = "Present"
                 DependsOn = "[FileReadAccessShare]CMSourceSMBShare"
             }
@@ -146,7 +148,7 @@
                 TaskName = "ScriptWorkFlow"
                 ScriptName = "ScriptWorkFlow.ps1"
                 ScriptPath = $PSScriptRoot
-                ScriptArgument = "$DomainName $CM $DName\$($Admincreds.UserName) $DPMPName $Clients $Configuration $CurrentRole $LogFolder $CSName $PSName"
+                ScriptArgument = "$DomainName $CM $DName\$($Admincreds.UserName) $DPMPName $Clients $Configuration $CurrentRole $LogFolder $CSName $PSName $($SCCMCreds.UserName)"
                 Ensure = "Present"
                 DependsOn = "[ChangeSQLServicesAccount]ChangeToLocalSystem"
             }

@@ -1,0 +1,25 @@
+<SMS_Roles>
+  <SMS_Role CopiedFromID="SMS0004R" RoleName="1-Asset-Manager" RoleDescription="">
+    <Operations>
+      <Operation GrantedOperations="71681" ObjectTypeID="1" />
+      <Operation GrantedOperations="1" ObjectTypeID="4" />
+      <Operation GrantedOperations="1064961" ObjectTypeID="6" />
+      <Operation GrantedOperations="1" ObjectTypeID="7" />
+      <Operation GrantedOperations="805446679" ObjectTypeID="9" />
+      <Operation GrantedOperations="201326594" ObjectTypeID="26" />
+      <Operation GrantedOperations="1031" ObjectTypeID="36" />
+      <Operation GrantedOperations="1047" ObjectTypeID="38" />
+      <Operation GrantedOperations="805307395" ObjectTypeID="44" />
+      <Operation GrantedOperations="1031" ObjectTypeID="50" />
+      <Operation GrantedOperations="269485063" ObjectTypeID="79" />
+      <Operation GrantedOperations="1" ObjectTypeID="83" />
+      <Operation GrantedOperations="1047" ObjectTypeID="205" />
+      <Operation GrantedOperations="1047" ObjectTypeID="206" />
+      <Operation GrantedOperations="1047" ObjectTypeID="209" />
+      <Operation GrantedOperations="1047" ObjectTypeID="210" />
+      <Operation GrantedOperations="1031" ObjectTypeID="215" />
+      <Operation GrantedOperations="1031" ObjectTypeID="221" />
+      <Operation GrantedOperations="1047" ObjectTypeID="226" />
+    </Operations>
+  </SMS_Role>
+</SMS_Roles>

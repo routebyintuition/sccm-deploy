@@ -19,7 +19,9 @@
         [Parameter(Mandatory)]
         [String]$DNSIPAddress,
         [Parameter(Mandatory)]
-        [System.Management.Automation.PSCredential]$Admincreds
+        [System.Management.Automation.PSCredential]$Admincreds,
+        [Parameter(Mandatory)]
+        [System.Management.Automation.PSCredential]$SCCMCreds        
     )
 
     Import-DscResource -ModuleName TemplateHelpDSC

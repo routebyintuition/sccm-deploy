@@ -1,0 +1,21 @@
+<SMS_Roles>
+  <SMS_Role CopiedFromID="SMS000CR" RoleName="2-SoftUpdMan" RoleDescription="Software Update Manager - Administrative users can manage software update groups, deployments, deployment templates, and enable software updates.">
+    <Operations>
+      <Operation GrantedOperations="1140920321" ObjectTypeID="1" />
+      <Operation GrantedOperations="1" ObjectTypeID="6" />
+      <Operation GrantedOperations="1" ObjectTypeID="7" />
+      <Operation GrantedOperations="1031" ObjectTypeID="15" />
+      <Operation GrantedOperations="1047" ObjectTypeID="24" />
+      <Operation GrantedOperations="805307399" ObjectTypeID="30" />
+      <Operation GrantedOperations="1047" ObjectTypeID="34" />
+      <Operation GrantedOperations="805708807" ObjectTypeID="37" />
+      <Operation GrantedOperations="1" ObjectTypeID="38" />
+      <Operation GrantedOperations="9" ObjectTypeID="42" />
+      <Operation GrantedOperations="1048585" ObjectTypeID="43" />
+      <Operation GrantedOperations="1" ObjectTypeID="45" />
+      <Operation GrantedOperations="1" ObjectTypeID="46" />
+      <Operation GrantedOperations="1" ObjectTypeID="226" />
+      <Operation GrantedOperations="263175" ObjectTypeID="227" />
+    </Operations>
+  </SMS_Role>
+</SMS_Roles>

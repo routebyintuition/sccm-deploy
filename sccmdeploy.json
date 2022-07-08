@@ -55,20 +55,21 @@
           "description": "Input must meet password complexity requirements as documented for property 'adminPassword' in https://docs.microsoft.com/en-us/rest/api/compute/virtualmachines/virtualmachines-create-or-update"
         }
       },
-      "_artifactsLocation": {
+      "sccmUsername": {
         "type": "string",
+        "minLength": 2,
+        "maxLength": 13,
         "metadata": {
-          "description": "The base URI where artifacts required by this template are located including a trailing '/'"
-        },
-        "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/application-workloads/sccm/sccm-currentbranch/"
+          "description": "The username for the SCCM user restricted by group/role access"
+        }
       },
-      "_artifactsLocationSasToken": {
+      "sccmPassword": {
         "type": "securestring",
+        "minLength": 8,
         "metadata": {
-          "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated. Use the defaultValue if the staging location is not secured. "
-        },
-        "defaultValue": ""
-      },
+          "description": "Input must meet password complexity requirements as documented for property 'sccmPassword' in https://docs.microsoft.com/en-us/rest/api/compute/virtualmachines/virtualmachines-create-or-update"
+        }
+      },         
       "location": {
         "type": "string",
         "defaultValue": "[resourceGroup().location]",
@@ -173,7 +174,7 @@
             "osProfile": {
               "computerName": "[concat(toLower(parameters('prefix')),toLower(if(less(copyIndex(),length(variables('vmInfo'))),variables('vmInfo')[variables('vmRole')[copyIndex()]].name,if(greaterOrEquals(copyIndex(),add(length(variables('vmInfo')),length(variables('siteInfo')))),variables('clientInfo')[sub(copyIndex(),add(length(variables('vmInfo')),length(variables('siteInfo'))))][variables('clientRole')[sub(copyIndex(),add(length(variables('vmInfo')),length(variables('siteInfo'))))]].name,variables('siteInfo')[variables('siteRole')[sub(copyIndex(),length(variables('vmInfo')))]].name))))]",
               "adminUsername": "[parameters('adminUsername')]",
-              "adminPassword": "[parameters('adminPassword')]",
+              "adminPassword": "[parameters('adminPassword')]",           
               "windowsConfiguration": {
                 "provisionVmAgent": true,
                 "timeZone": "[variables('timeZone')]"
@@ -241,12 +242,17 @@
                 "AdminCreds": {
                   "UserName": "[parameters('adminUsername')]",
                   "Password": "PrivateSettingsRef:AdminPassword"
+                },
+                "SCCMCreds": {
+                  "UserName": "[parameters('sccmUsername')]",
+                  "Password": "PrivateSettingsRef:SCCMPassword"
                 }
               }
             },
             "protectedSettings": {
               "Items": {
-                "AdminPassword": "[parameters('adminPassword')]"
+                "AdminPassword": "[parameters('adminPassword')]",
+                "SCCMPassword": "[parameters('sccmPassword')]"
               }
             }
           }

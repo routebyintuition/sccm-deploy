@@ -1,4 +1,4 @@
-Param($DomainFullName,$CM,$CMUser,$DPMPName,$ClientName,$Config,$CurrentRole,$LogFolder,$CSName,$PSName)
+Param($DomainFullName,$CM,$CMUser,$DPMPName,$ClientName,$Config,$CurrentRole,$LogFolder,$CSName,$PSName,$CMUserName)
 
 $CSRole = "CAS"
 $PSRole = "PS1"
@@ -114,7 +114,7 @@ if($Config -eq "Standalone")
     #Install CM and Config
     $ScriptFile = Join-Path -Path $ProvisionToolPath -ChildPath "InstallAndUpdateSCCM.ps1"
 
-    . $ScriptFile $DomainFullName $CM $CMUser $Role $ProvisionToolPath
+    . $ScriptFile $DomainFullName $CM $CMUser $Role $ProvisionToolPath $CMUserName
 
     #Install DP
     $ScriptFile = Join-Path -Path $ProvisionToolPath -ChildPath "InstallDP.ps1"

@@ -1854,6 +1854,7 @@ class InstallCA
         catch
         {
             Write-Verbose "Failed to install CA."
+            Write-Verbose $_
         }
     }
 
@@ -1873,4 +1874,60 @@ class InstallCA
         return $this
     }
     
+}
+
+[DscResource()]
+class CreateCSADUser
+{
+    [DscProperty(Key)]
+    [string] $CM
+
+    [DscProperty(Mandatory)]
+    [Ensure] $Ensure
+
+    [DscProperty(Key)]
+    [string] $DomainFullName
+
+    [DscProperty(Mandatory)]
+    [System.Management.Automation.PSCredential] $SCCMDetails
+
+    [void] Set()
+    {
+        $_DomainFullName = $this.DomainFullName
+        $_CMDom,$_CMUser = $this.SCCMDetails.UserName.split('\\')
+        $_CMPass = $this.SCCMDetails.Password
+
+        try
+        {
+            Write-Verbose "Creating SCCM User $_CMUser"
+
+            New-ADUser -Name $_CMUser -AccountPassword $_CMPass -DisplayName "SCCM Staff Account" -ChangePasswordAtLogon $False -Enabled $True -SamAccountName $_CMUser
+
+            $StatusPath = "$env:windir\temp\CreateCSADUser.txt"
+            "Finished" >> $StatusPath
+
+            Write-Verbose "Finished creating CMAD user $_CMUser."
+        }
+        catch
+        {
+            Write-Verbose "Failed to create user $_CMUser."
+            Write-Verbose $_
+        }
+    }
+
+    [bool] Test()
+    {
+        $StatusPath = "$env:windir\temp\CreateCSADUser.txt"
+        if(Test-Path $StatusPath)
+        {
+            return $true
+        }
+
+        return $false
+    }
+
+    [CreateCSADUser] Get()
+    {
+        return $this
+    }
 }

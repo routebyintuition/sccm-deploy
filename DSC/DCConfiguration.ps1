@@ -19,7 +19,9 @@
         [Parameter(Mandatory)]
         [String]$DNSIPAddress,
         [Parameter(Mandatory)]
-        [System.Management.Automation.PSCredential]$Admincreds
+        [System.Management.Automation.PSCredential]$Admincreds,
+        [Parameter(Mandatory)]
+        [System.Management.Automation.PSCredential]$SCCMCreds  
     )
 
     Import-DscResource -ModuleName TemplateHelpDSC
@@ -38,6 +40,7 @@
     $ClientComputerAccount = "$DName\$Clients$"
 
     [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($Admincreds.UserName)", $Admincreds.Password)
+    [System.Management.Automation.PSCredential]$CMDomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($SCCMCreds.UserName)", $SCCMCreds.Password)    
 
     Node LOCALHOST
     {
@@ -236,5 +239,15 @@
             Ensure = "Present"
             DependsOn = "[WriteConfigurationFile]WriteDPMPJoinDomain"
         }
+
+        CreateCSADUser CreateCSADUser
+        {
+            CM = $CM
+            DomainFullName = $DomainName
+            Ensure = "Present"
+            SCCMDetails = $CMDomainCreds
+            DependsOn = "[WriteConfigurationFile]WritePSJoinDomain"
+        }
+
     }
 }

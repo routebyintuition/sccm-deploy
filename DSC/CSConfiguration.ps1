@@ -19,7 +19,9 @@
         [Parameter(Mandatory)]
         [String]$DNSIPAddress,
         [Parameter(Mandatory)]
-        [System.Management.Automation.PSCredential]$Admincreds
+        [System.Management.Automation.PSCredential]$Admincreds,
+        [Parameter(Mandatory)]
+        [System.Management.Automation.PSCredential]$SCCMCreds        
     )
     Import-DscResource -ModuleName TemplateHelpDSC
     
@@ -35,6 +37,7 @@
     $PrimarySiteName = $PSName.split(".")[0] + "$"
     
     [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($Admincreds.UserName)", $Admincreds.Password)
+    [System.Management.Automation.PSCredential]$CMDomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($SCCMCreds.UserName)", $SCCMCreds.Password)      
 
     Node LOCALHOST
     {
@@ -169,7 +172,7 @@
             TaskName = "ScriptWorkFlow"
             ScriptName = "ScriptWorkFlow.ps1"
             ScriptPath = $PSScriptRoot
-            ScriptArgument = "$DomainName $CM $DName\$($Admincreds.UserName) $DPMPName $Clients $Configuration $CurrentRole $LogFolder $CSName $PSName"
+            ScriptArgument = "$DomainName $CM $DName\$($Admincreds.UserName) $DPMPName $Clients $Configuration $CurrentRole $LogFolder $CSName $PSName $($SCCMCreds.UserName)"
             Ensure = "Present"
             DependsOn = "[AddUserToLocalAdminGroup]AddADComputerToLocalAdminGroup"
         }

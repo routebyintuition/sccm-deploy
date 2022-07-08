@@ -30,7 +30,8 @@ DscResourcesToExport = @(
     'SetCustomPagingFile',
     'SetupDomain',
     'FileReadAccessShare',
-    'InstallCA'
+    'InstallCA',
+    'CreateCSADUser'
 )
 
 # Version number of this module.

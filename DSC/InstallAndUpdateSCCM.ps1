@@ -1,10 +1,13 @@
-Param($DomainFullName,$CM,$CMUser,$Role,$ProvisionToolPath)
+Param($DomainFullName,$CM,$CMUser,$Role,$ProvisionToolPath,$CMUserName)
 
 $SMSInstallDir="C:\Program Files\Microsoft Configuration Manager"
 
 $logpath = $ProvisionToolPath+"\InstallSCCMlog.txt"
 $ConfigurationFile = Join-Path -Path $ProvisionToolPath -ChildPath "$Role.json"
 $Configuration = Get-Content -Path $ConfigurationFile | ConvertFrom-Json
+
+$RoleDownloadURL = "https://acctblob.blob.core.windows.net/devblobs/cm-roles.zip"
+$RoleDownloadFile = "c:\cm-roles.zip"
 
 $Configuration.InstallSCCM.Status = 'Running'
 $Configuration.InstallSCCM.StartTime = Get-Date -format "yyyy-MM-dd HH:mm:ss"
@@ -137,6 +140,29 @@ while((Get-PSDrive -Name $SiteCode -PSProvider CMSite -ErrorAction SilentlyConti
     New-PSDrive -Name $SiteCode -PSProvider CMSite -Root $ProviderMachineName @initParams
 }
 
+# --- JF CMUser to local remote desktop group and downloading role import xml
+
+$DomainShortName = $DomainFullName.replace('.com','')
+
+$IntCmUser = "${DomainShortName}\${CMUserName}"
+("[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] adding $IntCmUser to local RDP group") | Out-File -Append $logpath
+
+Add-LocalGroupMember -Group "Remote Desktop Users" -Member $IntCmUser
+
+"[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] done adding $IntCmUser to RDP group" | Out-File -Append $logpath
+
+"[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Copying SCCM role definitions from web..." | Out-File -Append $logpath
+
+Invoke-WebRequest -Uri $RoleDownloadURL -OutFile $RoleDownloadFile
+
+"[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Done copying SCCM role definitions from web...unzipping..." | Out-File -Append $logpath
+
+Expand-Archive $RoleDownloadFile -DestinationPath "c:\"
+
+"[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Done unzipping." | Out-File -Append $logpath
+
+# --- done
+
 # Set the current location to be the site code.
 Set-Location "$($SiteCode):\" @initParams
 
@@ -144,6 +170,21 @@ Set-Location "$($SiteCode):\" @initParams
 "[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Setting $CMUser as CM administrative user." | Out-File -Append $logpath
 New-CMAdministrativeUser -Name $CMUser -RoleName "Full Administrator" -SecurityScopeName "All","All Systems","All Users and User Groups"
 "[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Done" | Out-File -Append $logpath
+
+# --- JF adding new CMUser ---
+("[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] adding new SCCM roles") | Out-File -Append $logpath
+Import-CMSecurityRole -XmlFileName 'C:\cm-roles\1-App-Admin.xml' -Overwrite $True
+Import-CMSecurityRole -XmlFileName 'C:\cm-roles\1-Asset-Man.xml' -Overwrite $True
+Import-CMSecurityRole -XmlFileName 'C:\cm-roles\2-SoftUpdMan.xml' -Overwrite $True
+Import-CMSecurityRole -XmlFileName 'C:\cm-roles\9-ro-Analyst.xml' -Overwrite $True
+
+"[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Setting $IntCmUser as CM administrative user." | Out-File -Append $logpath
+$roleInstall = "1-AppAdmin","1-Asset-Manager","2-SoftUpdMan","9-RO-Analyst"
+New-CMAdministrativeUser -Name $IntCmUser -RoleName $roleInstall
+"[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Done" | Out-File -Append $logpath
+
+("[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] User and roles for cmuser complete.") | Out-File -Append $logpath
+# --- done adding user 
 
 $upgradingfailed = $false
 $originalbuildnumber = ""
@@ -166,7 +207,7 @@ function getupdate()
 {
     "[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Get CM update..." | Out-File -Append $logpath
     $CMPSSuppressFastNotUsedCheck = $true
-    $updatepacklist= Get-CMSiteUpdate -Fast | ?{$_.State -ne 196612}
+    $updatepacklist= Get-CMSiteUpdate -Fast -Name "Configuration Manager 2203 Hotfix (KB14480034)" | ?{$_.State -ne 196612}
     $getupdateretrycount = 0
     while($updatepacklist.Count -eq 0)
     {
@@ -180,7 +221,7 @@ function getupdate()
         Invoke-CMSiteUpdateCheck -ErrorAction Ignore
         Start-Sleep 120
 
-        $updatepacklist= Get-CMSiteUpdate | ?{$_.State -ne 196612}
+        $updatepacklist= Get-CMSiteUpdate -Name "Configuration Manager 2203 Hotfix (KB14480034)" | ?{$_.State -ne 196612}
     }
 
     $updatepack=""
@@ -267,8 +308,8 @@ if($originalbuildnumber -eq "")
 #----------------------------------------------------
 $retrytimes = 0
 $downloadretrycount = 0
-#$updatepack = getupdate
-$updatepack = ""
+$updatepack = getupdate
+
 if($updatepack -ne "")
 {
     "[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Update package is " + $updatepack.Name | Out-File -Append $logpath
@@ -392,8 +433,8 @@ while($updatepack -ne "")
             Start-Sleep 600
         }
         #Get if there are any other updates need to be installed
-        #$updatepack = getupdate
-        $updatepack = "" 
+        $updatepack = getupdate
+        #$updatepack = "" 
         if($updatepack -ne "")
         {
             "[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Found another update package : " + $updatepack.Name | Out-File -Append $logpath
