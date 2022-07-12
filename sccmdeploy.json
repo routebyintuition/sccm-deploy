@@ -228,7 +228,7 @@
             "typeHandlerVersion": "2.21",
             "autoUpgradeMinorVersion": true,
             "settings": {
-              "modulesUrl": "https://acctblob.blob.core.windows.net/devblobs/DSC.zip",
+              "modulesUrl": "https://acctblob.blob.core.windows.net/devblobs/DSC-WF.zip",
               "configurationFunction": "[if(less(copyIndex(),length(variables('vmInfo'))),concat(variables('vmRole')[copyIndex()],'Configuration.ps1\\Configuration'),if(less(copyIndex(),add(length(variables('vmInfo')),length(variables('siteInfo')))),concat(variables('siteRole')[sub(copyIndex(),length(variables('vmInfo')))],'Configuration.ps1\\Configuration'),'ClientConfiguration.ps1\\Configuration'))]",
               "Properties": {
                 "DomainName": "[variables('domainName')]",

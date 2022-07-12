@@ -6,7 +6,7 @@ $logpath = $ProvisionToolPath+"\InstallSCCMlog.txt"
 $ConfigurationFile = Join-Path -Path $ProvisionToolPath -ChildPath "$Role.json"
 $Configuration = Get-Content -Path $ConfigurationFile | ConvertFrom-Json
 
-$RoleDownloadURL = "https://acctblob.blob.core.windows.net/devblobs/cm-roles.zip"
+$RoleDownloadURL = "https://acctblob.blob.core.windows.net/devblobs/cm-int-roles.zip"
 $RoleDownloadFile = "c:\cm-roles.zip"
 
 $Configuration.InstallSCCM.Status = 'Running'
