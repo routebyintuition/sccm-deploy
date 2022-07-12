@@ -14,10 +14,13 @@ jobs:
       - uses: montudor/action-zip@v1
         with:
           args: zip -qq -r -j DSC/DCConfiguration.zip DSC/*
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r -j dist/DCS-WF.zip DSC/*          
       - uses: actions/upload-artifact@v2
         with:
           name: role-zip
-          path: dist/cm-int-roles.zip
+          path: dist/cm-int-roles.zip          
       - uses: bacongobbler/azure-blob-storage-upload@main
         with:
           source_dir: dist
