@@ -1,5 +1,5 @@
 <SMS_Roles>
-  <SMS_Role CopiedFromID="SMS0004R" RoleName="1-Asset-Manager" RoleDescription="">
+  <SMS_Role CopiedFromID="SMS0004R" RoleName="1-Asset-Manager" RoleDescription="Role permissions related to asset management">
     <Operations>
       <Operation GrantedOperations="71681" ObjectTypeID="1" />
       <Operation GrantedOperations="1" ObjectTypeID="4" />

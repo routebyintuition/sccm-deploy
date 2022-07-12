@@ -10,8 +10,14 @@ jobs:
       - uses: actions/checkout@v2    
       - uses: montudor/action-zip@v1
         with:
-          args: zip -qq -r cm-int-roles.zip cm-roles
+          args: zip -qq -r dist/cm-int-roles.zip cm-roles
       - uses: actions/upload-artifact@v2
         with:
           name: role-zip
-          path: cm-int-roles.zip
+          path: dist/cm-int-roles.zip
+      - uses: bacongobbler/azure-blob-storage-upload@main
+        with:
+          source_dir: dist
+          container_name: ${{ secrets.AZ_STOR_CONT }}
+          connection_string: ${{ secrets.AZ_STOR_CONN_STR }}
+          overwrite: 'true'

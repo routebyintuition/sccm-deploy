@@ -163,6 +163,18 @@ Expand-Archive $RoleDownloadFile -DestinationPath "c:\"
 
 # --- done
 
+# --- JF Add PSAppDeploymentToolkit pre-seeds
+("[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Downloading PSAppDeployToolkit...") | Out-File -Append $logpath
+$PSDownloadURL = "https://acctblob.blob.core.windows.net/devblobs/PSAppDeployToolkit_v3.8.4.zip"
+$PSDownloadFile = "c:\psapp.zip"
+Invoke-WebRequest -Uri $PSDownloadURL -OutFile $PSDownloadFile
+("[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Unzipping PSAppDeployToolkit...") | Out-File -Append $logpath
+Expand-Archive $PSDownloadFile -DestinationPath "c:\psapp"
+("[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Copying PSAppDeployToolkit...") | Out-File -Append $logpath
+Copy-Item c:\psapp\Toolkit\* c:\keepass-build -Recurse
+
+# done with PSAppDeploymentToolkit preseed
+
 # Set the current location to be the site code.
 Set-Location "$($SiteCode):\" @initParams
 
