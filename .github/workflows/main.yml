@@ -16,7 +16,7 @@ jobs:
           cd DSC
           rm -fv DCConfiguration.zip
           zip -qq -r DCConfiguration.zip *
-          zip -qq -r -j ../dist/DSC-WF.zip *      
+          zip -qq -r ../dist/DSC-WF.zip *   
       - uses: actions/upload-artifact@v2
         with:
           name: role-zip
