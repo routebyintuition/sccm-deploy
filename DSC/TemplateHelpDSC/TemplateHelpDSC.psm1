@@ -1931,3 +1931,63 @@ class CreateCSADUser
         return $this
     }
 }
+
+[DscResource()]
+class InstallBgInfo
+{
+
+    [DscProperty(Mandatory)]
+    [Ensure] $Ensure
+
+    [DscProperty(Key)]
+    [string] $DomainFullName
+
+    [void] Set()
+    {
+        $_DomainFullName = $this.DomainFullName
+        $BgInfoDownloadURL = "https://download.sysinternals.com/files/BGInfo.zip"
+        $BgInfoDownloadFile = "c:\BGInfo.zip"
+        $BgInfoInstaller = "c:\BGInstall\Bginfo64.exe"
+        try
+        {
+            Write-Verbose "Downloading $BgInfoDownloadURL for $_DomainFullName"
+
+            Invoke-WebRequest -Uri $BgInfoDownloadURL -OutFile $BgInfoDownloadFile
+
+            Write-Verbose "Expanding archive as $BgInfoInstaller"
+            Expand-Archive $BgInfoDownloadFile -DestinationPath "c:\BGInstall"
+
+            Write-Verbose "Initiating installer $BgInfoInstaller"
+            Start-Process -Filepath ($BgInfoInstaller) -ArgumentList ('/timer:0 /silent /NOLICPROMPT') -wait
+            if(!(Test-Path $BgInfoInstaller))
+            {
+                Write-Verbose "Download and expansion of $BgInfoDownloadURL succeeded for $_DomainFullName to $BgInfoInstaller"
+            }
+
+            $StatusPath = "$env:windir\temp\InstallBgInfo.txt"
+            "Finished" >> $StatusPath
+            
+        }
+        catch
+        {
+            Write-Verbose "Failed to download $BgInfoDownloadURL."
+            Write-Verbose $_
+        }
+    }
+
+    [bool] Test()
+    {
+        $StatusPath = "$env:windir\temp\InstallBgInfo.txt"
+        if(Test-Path $StatusPath)
+        {
+            return $true
+        }
+
+        return $false
+    }
+
+    [InstallBgInfo] Get()
+    {
+        return $this
+    }
+}

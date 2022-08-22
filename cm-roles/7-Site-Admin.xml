@@ -1,0 +1,8 @@
+<SMS_Roles>
+  <SMS_Role CopiedFromID="SMS000BR" RoleName="7-Site-Admin" RoleDescription="Site admin hierarchy permissions">
+    <Operations>
+      <Operation GrantedOperations="276104215" ObjectTypeID="6" />
+      <Operation GrantedOperations="1047" ObjectTypeID="226" />
+    </Operations>
+  </SMS_Role>
+</SMS_Roles>

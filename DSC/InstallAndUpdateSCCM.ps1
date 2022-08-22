@@ -9,6 +9,10 @@ $Configuration = Get-Content -Path $ConfigurationFile | ConvertFrom-Json
 $RoleDownloadURL = "https://acctblob.blob.core.windows.net/devblobs/cm-int-roles.zip"
 $RoleDownloadFile = "c:\cm-roles.zip"
 
+$BgInfoDownloadURL = "https://download.sysinternals.com/files/BGInfo.zip"
+$BgInfoDownloadFile = "c:\BGInfo.zip"
+$BgInfoInstaller = "c:\BGInstall\Bginfo64.exe"
+
 $Configuration.InstallSCCM.Status = 'Running'
 $Configuration.InstallSCCM.StartTime = Get-Date -format "yyyy-MM-dd HH:mm:ss"
 $Configuration | ConvertTo-Json | Out-File -FilePath $ConfigurationFile -Force
@@ -27,6 +31,18 @@ if(!(Test-Path $cmpath))
 }
 $CMINIPath = "c:\$CM\Standalone.ini"
 "[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Check ini file." | Out-File -Append $logpath
+
+
+"[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Downloading BGInfo installation source..." | Out-File -Append $logpath
+Invoke-WebRequest -Uri $BgInfoDownloadURL -OutFile $BgInfoDownloadFile
+"[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Extracting BGInfo installation source..." | Out-File -Append $logpath
+Expand-Archive $BgInfoDownloadFile -DestinationPath "c:\BGInstall"
+"[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Installing BGInfo..." | Out-File -Append $logpath
+Start-Process -Filepath ($BgInfoInstaller) -ArgumentList ('/timer:0 /silent /NOLICPROMPT') -wait
+if(!(Test-Path $BgInfoInstaller))
+{
+    "[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Installed BGInfo..." | Out-File -Append $logpath
+}
 
 $cmini = @'
 [Identification]
@@ -188,6 +204,7 @@ New-CMAdministrativeUser -Name $CMUser -RoleName "Full Administrator" -SecurityS
 Import-CMSecurityRole -XmlFileName 'C:\cm-roles\1-App-Admin.xml' -Overwrite $True
 Import-CMSecurityRole -XmlFileName 'C:\cm-roles\1-Asset-Man.xml' -Overwrite $True
 Import-CMSecurityRole -XmlFileName 'C:\cm-roles\2-SoftUpdMan.xml' -Overwrite $True
+Import-CMSecurityRole -XmlFileName 'C:\cm-roles\7-Site-Admin.xml' -Overwrite $True
 Import-CMSecurityRole -XmlFileName 'C:\cm-roles\9-ro-Analyst.xml' -Overwrite $True
 
 "[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Setting $IntCmUser as CM administrative user." | Out-File -Append $logpath

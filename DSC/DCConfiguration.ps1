@@ -249,5 +249,12 @@
             DependsOn = "[WriteConfigurationFile]WritePSJoinDomain"
         }
 
+        InstallBgInfo InstallBgInfo
+        {
+            DomainFullName = $DomainName
+            Ensure = "Present"
+            DependsOn = "[WriteConfigurationFile]WritePSJoinDomain"
+        }
+
     }
 }

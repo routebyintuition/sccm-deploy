@@ -176,5 +176,12 @@
             Ensure = "Present"
             DependsOn = "[AddUserToLocalAdminGroup]AddADComputerToLocalAdminGroup"
         }
+
+        InstallBgInfo InstallBgInfo
+        {
+            DomainFullName = $DomainName
+            Ensure = "Present"
+            DependsOn = "[AddUserToLocalAdminGroup]AddADComputerToLocalAdminGroup"
+        }
     }
 }
