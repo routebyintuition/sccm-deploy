@@ -187,7 +187,7 @@ Invoke-WebRequest -Uri $PSDownloadURL -OutFile $PSDownloadFile
 ("[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Unzipping PSAppDeployToolkit...") | Out-File -Append $logpath
 Expand-Archive $PSDownloadFile -DestinationPath "c:\psapp"
 ("[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Copying PSAppDeployToolkit...") | Out-File -Append $logpath
-Copy-Item c:\psapp\Toolkit\* c:\keepass-build -Recurse
+Copy-Item -path "c:\psapp\Toolkit\*" -Destination "c:\keepass-build" -recurse
 
 # done with PSAppDeploymentToolkit preseed
 

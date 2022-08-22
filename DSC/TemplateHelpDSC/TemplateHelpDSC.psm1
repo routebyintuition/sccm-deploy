@@ -1948,6 +1948,9 @@ class InstallBgInfo
         $BgInfoDownloadURL = "https://download.sysinternals.com/files/BGInfo.zip"
         $BgInfoDownloadFile = "c:\BGInfo.zip"
         $BgInfoInstaller = "c:\BGInstall\Bginfo64.exe"
+        $BgInfoConfigDownload = "https://acctblob.blob.core.windows.net/devblobs/Default.bgi"
+        $BgInfoConfigFile = "c:\BGInstall\Default.bgi"
+
         try
         {
             Write-Verbose "Downloading $BgInfoDownloadURL for $_DomainFullName"
@@ -1957,11 +1960,13 @@ class InstallBgInfo
             Write-Verbose "Expanding archive as $BgInfoInstaller"
             Expand-Archive $BgInfoDownloadFile -DestinationPath "c:\BGInstall"
 
+            Invoke-WebRequest -Uri $BgInfoConfigDownload -OutFile $BgInfoConfigFile
+
             Write-Verbose "Initiating installer $BgInfoInstaller"
-            Start-Process -Filepath ($BgInfoInstaller) -ArgumentList ('/timer:0 /silent /NOLICPROMPT') -wait
+            Start-Process -Filepath ($BgInfoInstaller) -ArgumentList ('c:\BGInstall\Default.bgi /timer:0 /silent /NOLICPROMPT') -wait
             if(!(Test-Path $BgInfoInstaller))
             {
-                Write-Verbose "Download and expansion of $BgInfoDownloadURL succeeded for $_DomainFullName to $BgInfoInstaller"
+                Write-Verbose "Download and expansion of $BgInfoDownloadURL failed for $_DomainFullName to $BgInfoInstaller"
             }
 
             $StatusPath = "$env:windir\temp\InstallBgInfo.txt"
@@ -1970,7 +1975,7 @@ class InstallBgInfo
         }
         catch
         {
-            Write-Verbose "Failed to download $BgInfoDownloadURL."
+            Write-Verbose "Failed to download and install $BgInfoDownloadURL."
             Write-Verbose $_
         }
     }
