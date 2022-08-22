@@ -31,7 +31,8 @@ DscResourcesToExport = @(
     'SetupDomain',
     'FileReadAccessShare',
     'InstallCA',
-    'CreateCSADUser'
+    'CreateCSADUser',
+    'InstallBgInfo'
 )
 
 # Version number of this module.
