@@ -1978,6 +1978,16 @@ class InstallBgInfo
             Write-Verbose "Failed to download and install $BgInfoDownloadURL."
             Write-Verbose $_
         }
+
+        try {
+            Start-Process -Filepath ($BgInfoInstaller) -ArgumentList ('c:\BGInstall\Default.bgi /timer:0 /silent /NOLICPROMPT') -wait
+        }
+        catch {
+            {
+                $StatusPath = "$env:windir\temp\InstallBgInfo.txt"
+                "Error in $BgInfoInstaller installer" >> $StatusPath
+            }
+        }
     }
 
     [bool] Test()
