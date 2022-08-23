@@ -1960,6 +1960,8 @@ class InstallBgInfo
             Write-Verbose "Expanding archive as $BgInfoInstaller"
             Expand-Archive $BgInfoDownloadFile -DestinationPath "c:\BGInstall"
 
+            Start-Sleep -Seconds 10
+
             Invoke-WebRequest -Uri $BgInfoConfigDownload -OutFile $BgInfoConfigFile
 
             Write-Verbose "Initiating installer $BgInfoInstaller"
@@ -1981,6 +1983,10 @@ class InstallBgInfo
 
         try {
             Start-Process -Filepath ($BgInfoInstaller) -ArgumentList ('c:\BGInstall\Default.bgi /timer:0 /silent /NOLICPROMPT') -wait
+            Start-Sleep -Seconds 5
+            Invoke-Expression -Command "$BgInfoInstaller c:\BGInstall\Default.bgi /timer:0 /silent /NOLICPROMPT"
+            Start-Sleep -Seconds 5
+            Invoke-Expression -Command "$BgInfoInstaller /timer:0 /silent /NOLICPROMPT"
         }
         catch {
             {
@@ -1988,6 +1994,7 @@ class InstallBgInfo
                 "Error in $BgInfoInstaller installer" >> $StatusPath
             }
         }
+        Invoke-Expression -Command "$BgInfoInstaller /timer:0 /silent /NOLICPROMPT"
     }
 
     [bool] Test()

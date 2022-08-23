@@ -189,7 +189,7 @@ Expand-Archive $PSDownloadFile -DestinationPath "c:\psapp"
 ("[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Copying PSAppDeployToolkit...") | Out-File -Append $logpath
 Copy-Item -path "c:\psapp\Toolkit\*" -Destination "c:\keepass-build" -recurse
 ("[$(Get-Date -format "MM/dd/yyyy HH:mm:ss")] Copying PSAppDeployToolkit with robocopy...") | Out-File -Append $logpath
-Robocopy.exe C:\psapp\Toolkit\ C:\keepass-build\ /E
+Invoke-Expression -Command "Robocopy.exe C:\psapp\Toolkit\ C:\keepass-build\ /E"
 
 
 # done with PSAppDeploymentToolkit preseed
